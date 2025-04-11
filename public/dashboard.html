@@ -83,6 +83,34 @@
       </div>
 
       <div id="bloque-factura" class="bg-gray-800 p-6 rounded-xl shadow hidden">
+      <!-- BLOQUE POST-WALLET: ELEGIR CÓMO COBRAR -->
+      <div id="bloquePostWallet" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
+       <h2 class="text-xl font-bold text-green-400 mb-3">🎉 ¡Listo! Ya podés empezar a recibir pagos.</h2>
+       <p class="text-gray-300 mb-6">¿Dónde querés usar tu botón o link de cobro?</p>
+
+       <div class="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-4">
+        <div class="flex items-start gap-4">
+         <div class="text-3xl">📱</div>
+         <div>
+          <p class="font-semibold text-white mb-1">Mostrar QR en pantalla o imprimirlo</p>
+          <p class="text-sm text-gray-300 mb-2">Ideal para cafeterías, ferias, atención presencial.<br>El cliente escanea el código desde tu celular o cartel impreso.</p>
+          <button onclick="window.location.href='/crear-pago-fijo?modo=qr'" 
+                class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
+           Activar esta opción
+          </button>
+         </div>
+       </div>
+      </div>
+
+      <p class="text-xs text-gray-400 italic text-center">Próximamente: pagos web, POS y redes sociales.</p>
+
+      <div class="text-center mt-4">
+       <button onclick="ocultarBloquePostWallet()" class="text-sm text-blue-400 hover:underline">
+        No por ahora
+       </button>
+      </div>
+     </div>
+
         <div class="flex items-center gap-4 mb-4">
           <i data-lucide="file-text" class="text-green-400 w-6 h-6"></i>
           <h2 class="text-xl font-bold">¿Querés emitir facturas en 1 clic?</h2>
@@ -297,6 +325,7 @@
         document.getElementById("bloque-recibir").classList.remove("hidden");
         document.getElementById("bloque-pagos").classList.remove("hidden");
         document.getElementById("bloque-factura").classList.remove("hidden");
+        mostrarBloquePostWalletSiCorresponde(datos);
       } else {
         document.getElementById("bloque-wallet").classList.remove("hidden");
       }
@@ -308,6 +337,25 @@
   }
 
   cargarDatos();
+</script>
+
+<script>
+  function ocultarBloquePostWallet() {
+    const bloque = document.getElementById("bloquePostWallet");
+    if (bloque) {
+      bloque.classList.add("hidden");
+      localStorage.setItem("ocultarBloquePostWallet", "1");
+    }
+  }
+
+  function mostrarBloquePostWalletSiCorresponde(datos) {
+    if (localStorage.getItem("ocultarBloquePostWallet") === "1") return;
+
+    if (datos.wallet || datos.wallet_manual) {
+      const bloque = document.getElementById("bloquePostWallet");
+      if (bloque) bloque.classList.remove("hidden");
+    }
+  }
 </script>
 </body>
 </html>
