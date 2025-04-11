@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - PlataformA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+<div class="flex h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 flex flex-col px-4 py-6">
+    <h2 class="text-2xl font-bold text-green-400 mb-8">PlataformA</h2>
+    <nav class="flex flex-col gap-2">
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700 active" data-seccion="inicio">Inicio</button>
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700" data-seccion="perfil">Mi perfil</button>
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700" data-seccion="cobros">Cobros</button>
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700" data-seccion="reportes">Reportes</button>
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700" data-seccion="integraciones">Integraciones</button>
+      <button class="nav-btn text-left px-3 py-2 rounded hover:bg-gray-700 focus:bg-gray-700" data-seccion="ayuda">Ayuda</button>
+    </nav>
+    <button onclick="cerrarSesion()" class="mt-auto text-red-400 hover:text-red-500 px-3 py-2 rounded text-left">Cerrar sesión</button>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="flex-1 p-6 overflow-y-auto">
+    <section id="inicio" class="seccion">
+      <h1 class="text-3xl font-bold mb-6" id="saludo">Hola</h1>
+      <p class="text-gray-300 mb-6">Esta es tu consola principal para gestionar cobros.</p>
+
+      <div id="bloque-wallet" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
+        <div class="flex items-center gap-4 mb-4">
+          <i data-lucide="check-circle" class="text-green-400 w-6 h-6"></i>
+          <h2 class="text-xl font-bold">Tu próximo paso</h2>
+        </div>
+        <p class="text-gray-300 mb-4">Aún no tenés una wallet conectada.</p>
+        <div class="flex gap-4">
+          <button onclick="crearWallet()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Crear nueva wallet</button>
+          <button onclick="asociarWallet()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">Asociar wallet existente</button>
+        </div>
+        <!-- MOVIDO FUERA DEL FLEX -->
+        <div id="formulario-wallet" class="w-full mt-6 hidden flex flex-col gap-4">
+          <label class="block">
+            <span class="text-sm text-gray-300">Nombre del wallet</span>
+            <input type="text" id="nombreWalletManual" class="mt-1 block w-full bg-gray-700 text-white px-3 py-2 rounded" placeholder="Ej: Binance, TrustWallet">
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Dirección del wallet</span>
+            <input type="text" id="direccionWalletManual" class="mt-1 block w-full bg-gray-700 text-white px-3 py-2 rounded font-mono" placeholder="0x...">
+          </label>
+          <button onclick="guardarWalletManual()" class="mt-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg w-fit">
+            Guardar wallet manualmente
+          </button>
+        </div>
+      </div>
+
+      <div id="bloque-recibir" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
+        <div class="flex items-center gap-4 mb-4">
+          <i data-lucide="wallet" class="text-green-400 w-6 h-6"></i>
+          <h2 class="text-xl font-bold">Recibí pagos</h2>
+        </div>
+        <p class="text-gray-300 mb-2">Dirección: <span id="direccionWallet" class="font-mono text-green-400"></span></p>
+        <img id="qrWallet" src="" alt="QR" class="mt-2 rounded bg-white p-1 w-32 h-32">
+      </div>
+
+      <div id="bloque-pagos" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
+        <div class="flex items-center gap-4 mb-4">
+          <i data-lucide="clock" class="text-green-400 w-6 h-6"></i>
+          <h2 class="text-xl font-bold">Últimos pagos</h2>
+        </div>
+        <table class="w-full text-left text-sm">
+          <thead class="text-gray-400">
+            <tr><th>Fecha</th><th>Monto</th><th>Moneda</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="py-1">01/04/2025</td><td>15.00</td><td>USDT</td><td class="text-green-400">✓ Confirmado</td></tr>
+            <tr><td class="py-1">29/03/2025</td><td>22.50</td><td>USDT</td><td class="text-green-400">✓ Confirmado</td></tr>
+          </tbody>
+        </table>
+        <button class="mt-4 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-white">Ver todos los reportes</button>
+      </div>
+
+      <div id="bloque-factura" class="bg-gray-800 p-6 rounded-xl shadow hidden">
+        <div class="flex items-center gap-4 mb-4">
+          <i data-lucide="file-text" class="text-green-400 w-6 h-6"></i>
+          <h2 class="text-xl font-bold">¿Querés emitir facturas en 1 clic?</h2>
+        </div>
+        <p class="text-gray-300 mb-4">Activá el módulo automático de facturación para simplificar tu administración.</p>
+        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">Activar facturación</button>
+      </div>
+    </section>
+
+    <section id="perfil" class="seccion hidden">
+      <h1 class="text-3xl font-bold mb-6">Mi perfil</h1>
+    
+      <div class="bg-gray-800 p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-green-400 mb-4">Datos del negocio</h2>
+        <p class="mb-2 text-sm text-gray-300">Nombre: <span id="perfil-nombre" class="text-white font-bold"></span></p>
+        <p class="mb-2 text-sm text-gray-300">Email: <span id="perfil-email" class="text-white font-mono"></span></p>
+        <p class="mb-2 text-sm text-gray-300">País: <span id="perfil-pais" class="text-white"></span></p>
+      </div>
+    
+      <div class="bg-gray-800 p-6 rounded-xl shadow mt-6">
+        <h2 class="text-xl font-semibold text-green-400 mb-4">Estado del wallet</h2>
+        <p class="mb-2 text-sm text-gray-300">Wallet principal: <span id="perfil-wallet" class="text-green-300 font-mono"></span></p>
+        <p class="mb-2 text-sm text-gray-300">Wallet manual: <span id="perfil-wallet-manual" class="text-green-300 font-mono"></span></p>
+        <p class="mb-2 text-sm text-gray-300">Saldo USDT: <span id="perfil-saldo" class="text-white font-bold"></span></p>
+        <p class="mb-2 text-sm text-gray-300">Estado: <span id="perfil-estado" class="text-white font-bold"></span></p>
+      </div>
+    </section>
+    
+    <section id="cobros" class="seccion hidden"><h1 class="text-3xl font-bold">Cobros</h1></section>
+    <section id="reportes" class="seccion hidden"><h1 class="text-3xl font-bold">Reportes</h1></section>
+    <section id="integraciones" class="seccion hidden"><h1 class="text-3xl font-bold">Integraciones</h1></section>
+    <section id="ayuda" class="seccion hidden"><h1 class="text-3xl font-bold">Ayuda</h1></section>
+  </main>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  const botones = document.querySelectorAll(".nav-btn");
+  const secciones = document.querySelectorAll(".seccion");
+
+  botones.forEach(boton => {
+    boton.addEventListener("click", () => {
+      botones.forEach(b => b.classList.remove("bg-gray-700", "text-white"));
+      secciones.forEach(s => s.classList.add("hidden"));
+      boton.classList.add("bg-gray-700", "text-white");
+      document.getElementById(boton.dataset.seccion).classList.remove("hidden");
+    });
+  });
+
+  function cerrarSesion() {
+    localStorage.removeItem("client_id");
+    window.location.href = "login.html";
+  }
+
+  function asociarWallet() {
+    const formulario = document.getElementById("formulario-wallet");
+    formulario.classList.toggle("hidden");
+  }
+
+  async function crearWallet() {
+  const client_id = localStorage.getItem("client_id");
+  const res = await fetch("http://localhost:3000/generar-wallet", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ client_id })
+  });
+
+  const data = await res.json();
+  if (!res.ok) return mostrarMensaje(data.error || "No se pudo generar la wallet", "error");
+
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50";
+  modal.innerHTML = `
+    <div class="bg-gray-900 p-6 rounded-lg shadow-xl max-w-lg w-full border border-green-400">
+      <h2 class="text-xl font-bold text-green-400 mb-4">¡Wallet generada con éxito!</h2>
+      <p class="text-gray-300 mb-2">Dirección:</p>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="bg-gray-800 text-green-400 font-mono p-2 rounded break-all text-sm flex-1">${data.address}</span>
+        <button onclick="navigator.clipboard.writeText('${data.address}')" class="text-gray-400 hover:text-white" title="Copiar dirección">
+          <i data-lucide="copy"></i>
+        </button>
+      </div>
+      <p class="text-gray-300 mt-4 mb-2">Clave privada:</p>
+      <div class="flex items-center gap-2 mb-2">
+        <textarea readonly class="bg-gray-800 text-pink-400 font-mono p-2 rounded w-full h-24">${data.privateKey}</textarea>
+        <button onclick="navigator.clipboard.writeText('${data.privateKey}')" class="text-gray-400 hover:text-white" title="Copiar clave">
+          <i data-lucide="copy"></i>
+        </button>
+      </div>
+      <p class="text-yellow-300 text-sm mt-4">⚠ Guardá esta información en un lugar seguro. No podrá recuperarse luego.</p>
+      <div class="text-right mt-6 flex gap-4 justify-end flex-wrap">
+        <button onclick="descargarPDF('${data.address}', '${data.privateKey}')" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+          Descargar PDF
+        </button>
+        ${data.ipfsUrl ? `
+          <a href="${data.ipfsUrl}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+            Ver en IPFS
+          </a>` : ""}
+        <button onclick="document.body.removeChild(this.parentNode.parentNode.parentNode); location.reload();" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">
+          Entendido
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  lucide.createIcons();
+ }
+
+  function mostrarMensaje(texto, tipo = "info") {
+    const color = tipo === "success" ? "bg-green-600" : "bg-red-600";
+    const mensaje = document.createElement("div");
+    mensaje.className = `${color} text-white fixed top-4 right-4 px-4 py-2 rounded shadow z-50`;
+    mensaje.textContent = texto;
+    document.body.appendChild(mensaje);
+    setTimeout(() => mensaje.remove(), 3000);
+  }
+
+  function descargarPDF(address, privateKey) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("Tu nueva wallet en PlataformA", 20, 20);
+    doc.setFontSize(10);
+    doc.text(`Dirección: ${address}`, 20, 40);
+    doc.text(`Clave privada: ${privateKey}`, 20, 60);
+    doc.text("\n\u26a0 Guardá esta información en un lugar seguro.\nNo compartas tu clave privada con nadie.", 20, 80);
+    doc.save("wallet-PlataformA.pdf");
+  }
+
+  async function guardarWalletManual() {
+  const nombre = document.getElementById("nombreWalletManual").value.trim();
+  const direccion = document.getElementById("direccionWalletManual").value.trim();
+  const client_id = localStorage.getItem("client_id");
+
+  if (!nombre || !direccion || !direccion.startsWith("0x") || direccion.length < 42) {
+    return mostrarMensaje("Completá un nombre válido y una dirección que comience con 0x", "error");
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/guardar-wallet-manual", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_id,
+        nombre_wallet: nombre,
+        direccion_wallet: direccion
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) return mostrarMensaje(data.error || "Error al guardar la wallet", "error");
+
+    mostrarMensaje("✅ Wallet guardada correctamente", "success");
+    setTimeout(() => location.reload(), 1200);
+
+  } catch (error) {
+    console.error("❌ Error al asociar wallet manual:", error.message);
+    mostrarMensaje("Error inesperado al guardar la wallet", "error");
+  }
+ }
+
+ async function cargarDatos() {
+    const id = localStorage.getItem("client_id");
+    if (!id) return cerrarSesion();
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/datos-cliente/${id}`);
+      const datos = await res.json();
+
+      document.getElementById("saludo").textContent = `Hola, ${datos.nombre || 'usuario'}`;
+      document.getElementById("perfil-nombre").textContent = datos.nombre || "-";
+      document.getElementById("perfil-email").textContent = datos.email || "-";
+      document.getElementById("perfil-pais").textContent = datos.pais || "-";
+      document.getElementById("perfil-wallet").textContent = datos.wallet || "—";
+      document.getElementById("perfil-wallet-manual").textContent = datos.wallet_manual?.direccion || "—";
+
+ // Estado de wallet
+ if (datos.wallet || datos.wallet_manual) {
+  document.getElementById("perfil-estado").innerHTML = "<span class='text-green-400'>✅ Activo</span>";
+ } else {
+  document.getElementById("perfil-estado").innerHTML = "<span class='text-red-400'>❌ No activo</span>";
+ }
+
+ // Obtener saldo actual (solo si hay wallet principal)
+ if (datos.wallet) {
+  const resSaldo = await fetch(`http://localhost:3000/saldo/${id}`);
+  const infoSaldo = await resSaldo.json();
+  document.getElementById("perfil-saldo").textContent = `$${infoSaldo.balance_usdt} USDT`;
+} else {
+  document.getElementById("perfil-saldo").textContent = "—";
+ }
+
+      const walletManual = datos.wallet_manual;
+
+      if (datos.wallet || walletManual) {
+        if (datos.wallet) {
+          document.getElementById("direccionWallet").textContent = datos.wallet;
+          document.getElementById("qrWallet").src = `https://api.qrserver.com/v1/create-qr-code/?data=${datos.wallet}&size=150x150`;
+        }
+
+        if (walletManual) {
+          const spanExtra = document.createElement("div");
+          spanExtra.className = "mt-4";
+          spanExtra.innerHTML = `
+            <p class='text-gray-400 text-sm'>Wallet manual (${walletManual.nombre}):</p>
+            <p class='text-green-300 font-mono mb-2'>${walletManual.direccion}</p>
+          `;
+          document.getElementById("bloque-recibir").appendChild(spanExtra);
+        }
+
+        document.getElementById("bloque-recibir").classList.remove("hidden");
+        document.getElementById("bloque-pagos").classList.remove("hidden");
+        document.getElementById("bloque-factura").classList.remove("hidden");
+      } else {
+        document.getElementById("bloque-wallet").classList.remove("hidden");
+      }
+
+    } catch (e) {
+      console.error("❌ Error al cargar los datos del cliente", e);
+      cerrarSesion();
+    }
+  }
+
+  cargarDatos();
+</script>
+</body>
+</html>

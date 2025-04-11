@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlataformA</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <header class="flex justify-between items-center px-6 py-4 border-b border-gray-700">
+    <h1 class="text-2xl font-bold">PlataformA</h1>
+    <div class="flex gap-4">
+      <a href="#registro" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">Registrate gratis</a>
+      <a href="login.html" class="border border-green-500 hover:bg-green-600 hover:text-white text-green-400 px-4 py-2 rounded-lg transition">Iniciar sesión</a>
+    </div>
+  </header>
+
+  <main class="text-center px-4" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+    <h2 class="text-5xl font-extrabold mb-4">PlataformA</h2>
+    <p class="text-xl mb-6 text-gray-300">Ecosistema de soluciones listas para hacer crecer tu negocio</p>
+
+    <div class="mt-10 text-2xl h-16">
+      <span id="typedText" class="text-green-400 font-semibold"></span>
+    </div>
+
+    <a href="#registro" class="mt-10 mx-auto inline-block max-w-xs bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-bold transition">Activar pagos en cripto</a>
+  </main>
+
+  <section id="registro" class="px-6 py-20 bg-gray-900 text-left">
+    <div class="max-w-xl mx-auto">
+      <h3 class="text-3xl font-bold mb-6 text-center">Registrate en 1 minuto</h3>
+      <form id="formulario" class="grid gap-4">
+        <input type="text" id="nombre" placeholder="Nombre" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
+        <input type="email" id="email" placeholder="Email" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
+        <input type="password" id="password" placeholder="Contraseña" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
+        <input type="text" id="negocio" placeholder="Nombre del negocio" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400">
+        <input type="text" id="web" placeholder="Sitio web (opcional)" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400">
+        <select id="pais" class="p-3 rounded bg-gray-700 text-white" required>
+          <option value="" disabled selected>País</option>
+          <option value="Argentina">Argentina</option>
+          <option value="Uruguay">Uruguay</option>
+          <option value="Chile">Chile</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-bold transition">Crear cuenta</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const frases = [
+      "Evitá las comisiones del 6%",
+      "Recibí pagos globales sin bancos",
+      "Aceptá cripto de turistas y nómades",
+      "Cobrales en USDT, DAI o BTC"
+    ];
+
+    let index = 0;
+    const typedText = document.getElementById("typedText");
+
+    function typePhrase() {
+      typedText.textContent = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        typedText.textContent += frases[index][i];
+        i++;
+        if (i >= frases[index].length) {
+          clearInterval(interval);
+          setTimeout(() => {
+            index = (index + 1) % frases.length;
+            typePhrase();
+          }, 2000);
+        }
+      }, 70);
+    }
+
+    function validarFormulario(data) {
+      const emailValido = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email);
+      if (!emailValido) return "Poné un email válido";
+      if (!data.nombre || data.nombre.length < 2) return "Ingresá tu nombre";
+      if (!data.password || data.password.length < 4) return "Elegí una contraseña (mínimo 4 caracteres)";
+      return null;
+    }
+
+    function generarClientIdCorto() {
+      return Math.random().toString(36).substring(2, 10);
+    }
+
+    document.addEventListener("DOMContentLoaded", typePhrase);
+
+    document.getElementById("formulario").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        nombre: document.getElementById("nombre").value,
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value,
+        negocio: document.getElementById("negocio").value,
+        web: document.getElementById("web").value,
+        pais: document.getElementById("pais").value,
+        id: generarClientIdCorto()
+      };
+
+      const error = validarFormulario(data);
+      if (error) {
+        alert(error);
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:3000/registro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.client_id) {
+          localStorage.setItem("client_id", result.client_id);
+          window.location.href = "dashboard.html";
+        } else {
+          alert(result.error || "Hubo un error inesperado. Intentá más tarde.");
+        }
+      } catch (err) {
+        console.error("Error al registrar:", err);
+        alert("Hubo un error al registrar. Intentá de nuevo más tarde.");
+      }
+    });
+  </script>
+</body>
+</html>

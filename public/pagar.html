@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pagar con Cripto</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+  <div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg text-center">
+    <img id="logo" src="" alt="Logo del negocio" class="w-24 h-24 mx-auto rounded-full mb-4 hidden"/>
+
+    <h1 id="nombre" class="text-2xl font-bold mb-1">Cargando...</h1>
+    <p class="text-sm text-gray-600 mb-6">Aceptamos pagos en cripto (USDT por defecto)</p>
+
+    <div class="mb-4">
+      <h2 class="text-md font-semibold mb-1">Dirección del wallet:</h2>
+      <div class="bg-gray-100 p-2 rounded-md break-all" id="walletAddress">Cargando...</div>
+      <button onclick="copiar()" class="mt-2 text-blue-600 text-sm hover:underline">Copiar dirección</button>
+    </div>
+
+    <canvas id="qrcode" class="my-6 mx-auto shadow-md rounded-md"></canvas>
+
+    <p class="text-sm text-gray-600">Escaneá el código o pegá la dirección en tu wallet.</p>
+    <p class="text-sm text-gray-600 mb-4">Red sugerida: <strong>Polygon</strong></p>
+
+    <a id="botonMetaMask" href="#" class="bg-blue-600 text-white px-4 py-2 rounded-full shadow hover:bg-blue-700">Pagar con MetaMask</a>
+  </div>
+
+  <script>
+    async function init() {
+      const path = window.location.pathname;
+      const clientId = path.split("/").pop();
+      const response = await fetch(`/api/datos-cliente/${clientId}`);
+      const data = await response.json();
+
+      document.getElementById("nombre").textContent = data.nombre || "Comercio";
+      document.getElementById("walletAddress").textContent = data.wallet;
+      QRCode.toCanvas(document.getElementById("qrcode"), data.wallet);
+
+      if (data.logo) {
+        const logo = document.getElementById("logo");
+        logo.src = data.logo;
+        logo.classList.remove("hidden");
+      }
+
+      document.getElementById("botonMetaMask").href = `https://metamask.app.link/send/pay-${data.wallet}`;
+    }
+
+    function copiar() {
+      const addr = document.getElementById("walletAddress").textContent;
+      navigator.clipboard.writeText(addr);
+      alert("Dirección copiada");
+    }
+
+    init();
+  </script>
+</body>
+</html>

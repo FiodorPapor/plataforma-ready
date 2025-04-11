@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wizard de Configuración - Paso 1</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-gray-900 text-white font-sans p-6">
+  <main class="max-w-xl mx-auto space-y-10">
+    <h1 class="text-3xl font-bold mb-4 text-center">⚙️ Configuración inicial</h1>
+
+    <!-- PASO 1 -->
+    <div id="paso-1" class="bg-gray-800 p-6 rounded-lg text-white space-y-4">
+      <h2 class="text-2xl font-semibold mb-4">🔐 Paso 1: Tu Wallet</h2>
+
+      <p class="text-gray-300">¿Querés usar una wallet existente o crear una nueva?</p>
+
+      <div class="flex flex-col md:flex-row md:space-x-4">
+        <button onclick="mostrarFormularioWalletExistente()" class="bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-4 rounded mb-2 md:mb-0">🔗 Tengo una wallet</button>
+        <button onclick="crearWalletAutomatica()" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded">⚡ Crear nueva</button>
+      </div>
+
+      <!-- Formulario para wallet existente -->
+      <div id="formularioWalletExistente" class="mt-6 hidden space-y-4">
+        <label for="walletExistente" class="block">Pegá tu dirección:</label>
+        <input id="walletExistente" type="text" placeholder="0x..." class="w-full p-2 rounded text-black" />
+        <button onclick="asociarWallet()" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Guardar y continuar</button>
+        <p id="estadoWallet" class="text-sm mt-2 text-yellow-400 hidden">Verificando dirección...</p>
+      </div>
+
+      <!-- Resultado -->
+      <div id="resultadoWallet" class="mt-6 hidden p-4 rounded bg-gray-700 text-green-400 text-sm">
+        ✅ Wallet registrada. ¡Podés avanzar al siguiente paso!
+      </div>
+    </div>
+
+    <!-- Paso siguiente -->
+    <div id="paso-2" class="hidden bg-gray-800 p-6 rounded-lg">
+      <h2 class="text-xl font-semibold">✅ Paso 2: Próximamente</h2>
+      <p class="text-gray-300">Estamos preparando el siguiente paso del wizard...</p>
+    </div>
+  </main>
+
+  <script>
+    const client_id = localStorage.getItem("client_id");
+
+    function mostrarFormularioWalletExistente() {
+      document.getElementById("formularioWalletExistente").classList.remove("hidden");
+    }
+
+    function asociarWallet() {
+      const address = document.getElementById("walletExistente").value.trim();
+      const estado = document.getElementById("estadoWallet");
+      estado.classList.remove("hidden");
+      estado.textContent = "Verificando dirección...";
+
+      if (!address || !address.startsWith("0x") || address.length !== 42) {
+        alert("Dirección inválida");
+        estado.classList.add("hidden");
+        return;
+      }
+
+      fetch("http://localhost:3000/asociar-wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_id, wallet_address: address })
+      })
+      .then(res => res.json())
+      .then(data => {
+        estado.classList.add("hidden");
+        if (data.ok) {
+          mostrarResultadoYAvanzar();
+        } else if (data.error) {
+          alert(data.error);
+        } else {
+          alert("No se pudo asociar la wallet");
+        }
+      })
+      .catch(err => {
+        estado.classList.add("hidden");
+        alert("Error de conexión con el servidor");
+      });
+    }
+
+    function crearWalletAutomatica() {
+      fetch("http://localhost:3000/crear-wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.address) {
+          mostrarResultadoYAvanzar();
+        } else {
+          alert("Error al crear la wallet");
+        }
+      });
+    }
+
+    function mostrarResultadoYAvanzar() {
+      document.getElementById("resultadoWallet").classList.remove("hidden");
+      setTimeout(() => {
+        document.getElementById("paso-1").classList.add("hidden");
+        document.getElementById("paso-2").classList.remove("hidden");
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

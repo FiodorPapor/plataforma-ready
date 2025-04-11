@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciar sesión - PlataformA</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-gray-800 p-8 rounded-lg max-w-md w-full shadow-lg">
+      <h1 class="text-3xl font-bold mb-6 text-center">Iniciar sesión</h1>
+      <form id="formLogin" class="grid gap-4" autocomplete="on">
+        <input type="email" id="email" name="email" placeholder="Email" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required autocomplete="email">
+        <input type="password" id="password" name="password" placeholder="Contraseña" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required autocomplete="current-password">
+        <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-bold transition">Entrar</button>
+      </form>
+      <p class="text-center mt-4 text-sm text-gray-400">
+        ¿Todavía no tenés cuenta? <a href="index.html#registro" class="text-green-400 hover:underline">Registrate</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("formLogin").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("Completá todos los campos");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          alert(result.error || "Email o contraseña incorrectos");
+          return;
+        }
+
+        localStorage.setItem("client_id", result.client_id);
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        console.error("Error:", err);
+        alert("No se pudo conectar con el servidor");
+      }
+    });
+  </script>
+</body>
+</html>
