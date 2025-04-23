@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+console.log("🔍 POLYGONSCAN_API_KEY:", process.env.POLYGONSCAN_API_KEY);
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -114,7 +116,7 @@ app.post("/api/guardar-wallet-manual", async (req, res) => {
 
   try {
     const contractUSDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
-    const apiKey = "YP2ICEJ2T7UFVPC6G224AB53ADVCA98D6J";
+    const apiKey = process.env.POLYGONSCAN_API_KEY;
     const url = `https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=${contractUSDT}&address=${direccion_wallet}&tag=latest&apikey=${apiKey}`;
 
     const response = await axios.get(url);
@@ -180,6 +182,26 @@ app.post("/crear-pago", async (req, res) => {
   }
 });
 
+app.post("/api/elegir-escenario", (req, res) => {
+  const { client_id, tipo } = req.body;
+
+  if (!client_id || !["monto_fijo", "monto_editable"].includes(tipo)) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+
+  const userIndex = usuarios.findIndex(u => u.client_id === client_id);
+  if (userIndex === -1) {
+    return res.status(404).json({ error: "Usuario no encontrado" });
+  }
+
+  usuarios[userIndex].escenario_activado = true;
+  usuarios[userIndex].tipo_escenario = tipo;
+  usuarios[userIndex].link_escenario = `plataforma.ar/pagar/${client_id}/${tipo}`;
+
+  fs.writeFileSync(USERS_FILE, JSON.stringify(usuarios, null, 2));
+  res.json({ success: true });
+});
+
 app.get("/pagar/:id", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pagar.html"));
 });
@@ -193,8 +215,11 @@ app.get("/api/datos-cliente/:id", (req, res) => {
     nombre: user.nombre || "Negocio",
     wallet: user.wallet_address || "",
     wallet_manual: user.wallet_manual || null,
+    escenario_activado: user.escenario_activado || false,
+    tipo_escenario: user.tipo_escenario || null,
+    link_escenario: user.link_escenario || null,
     logo: user.logo || null
-  });
+  });  
 });
 
 app.get("/saldo/:id", async (req, res) => {
@@ -204,7 +229,7 @@ app.get("/saldo/:id", async (req, res) => {
 
   const wallet = user.wallet_address;
   const contractUSDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"; // ✅ PoS USDT (Polygon Bridged)
-  const apiKey = "YP2ICEJ2T7UFVPC6G224AB53ADVCA98D6J";
+  const apiKey = process.env.POLYGONSCAN_API_KEY;
   const url = `https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=${contractUSDT}&address=${wallet}&tag=latest&apikey=${apiKey}`;
 
   try {

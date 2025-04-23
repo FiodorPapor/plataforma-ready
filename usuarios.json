@@ -1,15 +1,18 @@
 [
   {
-    "client_id": "cwyqsrx4",
+    "client_id": "ie4r9hpp",
     "nombre": "Fedor",
     "email": "fiodorpapor@gmail.com",
     "password": "1234",
     "negocio": "Libreria F",
     "web": "www.",
     "pais": "Argentina",
-    "fecha_registro": "2025-04-21T14:27:51.590Z",
+    "fecha_registro": "2025-04-23T20:24:30.910Z",
     "wallet_address": "0x1988314957E0D32D78793d90541dAD1c6b2DF5cf",
     "wallet_nombre": "Mi wallet",
-    "fecha_wallet": "2025-04-21T14:29:27.329Z"
+    "fecha_wallet": "2025-04-23T20:24:50.705Z",
+    "escenario_activado": true,
+    "tipo_escenario": "monto_fijo",
+    "link_escenario": "plataforma.ar/pagar/ie4r9hpp/monto_fijo"
   }
 ]

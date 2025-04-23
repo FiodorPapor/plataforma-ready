@@ -62,8 +62,50 @@
           <h2 class="text-xl font-bold">Recibí pagos</h2>
         </div>
         <p class="text-gray-300 mb-2">Dirección: <span id="direccionWallet" class="font-mono text-green-400"></span></p>
+        <div id="bloque-link-cobro" class="mt-4 hidden">
+          <p class="text-sm text-gray-400">Tu link personalizado de cobro:</p>
+          <div class="flex items-center gap-2">
+            <span id="linkEscenarioTexto" class="text-green-400 font-mono text-sm underline cursor-pointer hover:text-green-300"></span>
+            <button onclick="copiarLinkEscenario()" class="text-gray-400 hover:text-white" title="Copiar link">
+              <i data-lucide="copy"></i>
+            </button>
+          </div>
+        </div>        
         <img id="qrWallet" src="" alt="QR" class="mt-2 rounded bg-white p-1 w-32 h-32">
       </div>
+
+      <!-- BLOQUE POST-WALLET: ELEGIR CÓMO COBRAR -->
+      <div id="bloquePostWallet" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
+        <h2 class="text-xl font-bold text-green-400 mb-3">🎉 ¡Listo! Ya podés empezar a recibir pagos.</h2>
+        <p class="text-gray-300 mb-6">Elegí cómo querés recibir los pagos:</p>
+ 
+        <div class="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-4">
+         <div class="flex items-start gap-4">
+          <div class="text-3xl">📱</div>
+          <div>
+           <p class="font-semibold text-white mb-1">Mostrar QR en pantalla o imprimirlo</p>
+           <p class="text-sm text-gray-300 mb-2">Ideal para cafeterías, ferias, atención presencial.<br>El cliente escanea el código desde tu celular o cartel impreso.</p>
+           <div class="flex flex-col sm:flex-row gap-4 mt-2"> 
+             <button onclick="elegirEscenario('monto_fijo')" 
+                 class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto">
+               📌 Crear QR con monto fijo
+             </button>
+             <button onclick="elegirEscenario('monto_editable')" 
+                  class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto">
+               ✏️ Crear QR con monto editable
+             </button>
+           </div>
+          </div>
+        </div>
+       </div>
+      <p class="text-xs text-gray-400 italic text-center">Próximamente: pagos web, POS y redes sociales.</p>
+
+      <div class="text-center mt-4">
+       <button onclick="ocultarBloquePostWallet()" class="text-sm text-blue-400 hover:underline">
+        No por ahora
+       </button>
+      </div>
+     </div>
 
       <div id="bloque-pagos" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
         <div class="flex items-center gap-4 mb-4">
@@ -83,33 +125,6 @@
       </div>
 
       <div id="bloque-factura" class="bg-gray-800 p-6 rounded-xl shadow hidden">
-      <!-- BLOQUE POST-WALLET: ELEGIR CÓMO COBRAR -->
-      <div id="bloquePostWallet" class="bg-gray-800 p-6 rounded-xl shadow mb-6 hidden">
-       <h2 class="text-xl font-bold text-green-400 mb-3">🎉 ¡Listo! Ya podés empezar a recibir pagos.</h2>
-       <p class="text-gray-300 mb-6">¿Dónde querés usar tu botón o link de cobro?</p>
-
-       <div class="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-4">
-        <div class="flex items-start gap-4">
-         <div class="text-3xl">📱</div>
-         <div>
-          <p class="font-semibold text-white mb-1">Mostrar QR en pantalla o imprimirlo</p>
-          <p class="text-sm text-gray-300 mb-2">Ideal para cafeterías, ferias, atención presencial.<br>El cliente escanea el código desde tu celular o cartel impreso.</p>
-          <button onclick="window.location.href='/crear-pago-fijo?modo=qr'" 
-                class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
-           Activar esta opción
-          </button>
-         </div>
-       </div>
-      </div>
-
-      <p class="text-xs text-gray-400 italic text-center">Próximamente: pagos web, POS y redes sociales.</p>
-
-      <div class="text-center mt-4">
-       <button onclick="ocultarBloquePostWallet()" class="text-sm text-blue-400 hover:underline">
-        No por ahora
-       </button>
-      </div>
-     </div>
 
         <div class="flex items-center gap-4 mb-4">
           <i data-lucide="file-text" class="text-green-400 w-6 h-6"></i>
@@ -274,8 +289,12 @@
  }
 
  async function cargarDatos() {
-    const id = localStorage.getItem("client_id");
-    if (!id) return cerrarSesion();
+     let id = localStorage.getItem("client_id");
+
+     if (!id) {
+      id = "demo123"; // demo automático
+      localStorage.setItem("client_id", id);
+     }
 
     try {
       const res = await fetch(`http://localhost:3000/api/datos-cliente/${id}`);
@@ -307,28 +326,38 @@
       const walletManual = datos.wallet_manual;
 
       if (datos.wallet || walletManual) {
-        if (datos.wallet) {
-          document.getElementById("direccionWallet").textContent = datos.wallet;
-          document.getElementById("qrWallet").src = `https://api.qrserver.com/v1/create-qr-code/?data=${datos.wallet}&size=150x150`;
-        }
+        if (!datos.escenario_activado) {
+          document.getElementById("bloquePostWallet").classList.remove("hidden");
+        } else {
+          // ✅ Ya eligió escenario, mostrar bloques principales
+          if (datos.wallet) {
+            document.getElementById("direccionWallet").textContent = datos.wallet;
+            document.getElementById("qrWallet").src = `https://api.qrserver.com/v1/create-qr-code/?data=${datos.wallet}&size=150x150`;
 
-        if (walletManual) {
-          const spanExtra = document.createElement("div");
-          spanExtra.className = "mt-4";
-          spanExtra.innerHTML = `
-            <p class='text-gray-400 text-sm'>Wallet manual (${walletManual.nombre}):</p>
-            <p class='text-green-300 font-mono mb-2'>${walletManual.direccion}</p>
-          `;
-          document.getElementById("bloque-recibir").appendChild(spanExtra);
-        }
+            if (datos.link_escenario) {
+              document.getElementById("linkEscenarioTexto").textContent = datos.link_escenario;
+              document.getElementById("bloque-link-cobro").classList.remove("hidden");
+            }
+          }
 
-        document.getElementById("bloque-recibir").classList.remove("hidden");
-        document.getElementById("bloque-pagos").classList.remove("hidden");
-        document.getElementById("bloque-factura").classList.remove("hidden");
-        mostrarBloquePostWalletSiCorresponde(datos);
+          if (walletManual) {
+            const spanExtra = document.createElement("div");
+            spanExtra.className = "mt-4";
+            spanExtra.innerHTML = `
+              <p class='text-gray-400 text-sm'>Wallet manual (${walletManual.nombre}):</p>
+              <p class='text-green-300 font-mono mb-2'>${walletManual.direccion}</p>
+            `;
+            document.getElementById("bloque-recibir").appendChild(spanExtra);
+          }
+
+          document.getElementById("bloque-recibir").classList.remove("hidden");
+          document.getElementById("bloque-pagos").classList.remove("hidden");
+          document.getElementById("bloque-factura").classList.remove("hidden");
+        }
       } else {
         document.getElementById("bloque-wallet").classList.remove("hidden");
       }
+
 
     } catch (e) {
       console.error("❌ Error al cargar los datos del cliente", e);
@@ -337,6 +366,8 @@
   }
 
   cargarDatos();
+  lucide.createIcons();
+
 </script>
 
 <script>
@@ -348,14 +379,42 @@
     }
   }
 
-  function mostrarBloquePostWalletSiCorresponde(datos) {
-    if (localStorage.getItem("ocultarBloquePostWallet") === "1") return;
+  async function elegirEscenario(tipo) {
+    const client_id = localStorage.getItem("client_id");
 
-    if (datos.wallet || datos.wallet_manual) {
+    try {
+      const res = await fetch("http://localhost:3000/api/elegir-escenario", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client_id, tipo })
+      });
+
+      const data = await res.json();
+      if (!res.ok) return mostrarMensaje(data.error || "No se pudo guardar el escenario", "error");
+
+      mostrarMensaje("✅ Escenario activado", "success");
+
+      // Ocultar la sección de elección
       const bloque = document.getElementById("bloquePostWallet");
-      if (bloque) bloque.classList.remove("hidden");
+      if (bloque) bloque.classList.add("hidden");
+
+      // Mostrar secciones principales del dashboard
+      document.getElementById("bloque-recibir")?.classList.remove("hidden");
+      document.getElementById("bloque-pagos")?.classList.remove("hidden");
+      document.getElementById("bloque-factura")?.classList.remove("hidden");
+
+    } catch (err) {
+      console.error("❌ Error al guardar el escenario", err);
+      mostrarMensaje("Error inesperado al activar escenario", "error");
     }
   }
+  function copiarLinkEscenario() {
+  const link = document.getElementById("linkEscenarioTexto").textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    mostrarMensaje("Link copiado al portapapeles", "success");
+  });
+}
+
 </script>
 </body>
 </html>
