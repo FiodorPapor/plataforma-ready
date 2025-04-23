@@ -1,14 +1,15 @@
 [
   {
-    "client_id": "5aj06mf4",
+    "client_id": "cwyqsrx4",
     "nombre": "Fedor",
     "email": "fiodorpapor@gmail.com",
     "password": "1234",
     "negocio": "Libreria F",
     "web": "www.",
     "pais": "Argentina",
-    "fecha_registro": "2025-04-10T14:18:58.452Z",
+    "fecha_registro": "2025-04-21T14:27:51.590Z",
     "wallet_address": "0x1988314957E0D32D78793d90541dAD1c6b2DF5cf",
-    "fecha_wallet": "2025-04-10T14:19:19.668Z"
+    "wallet_nombre": "Mi wallet",
+    "fecha_wallet": "2025-04-21T14:29:27.329Z"
   }
 ]
