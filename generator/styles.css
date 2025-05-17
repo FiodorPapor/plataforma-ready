@@ -1,0 +1,118 @@
+/* Estilo heredado del landing PlataformA + mejoras para la forma */
+
+/* Фоновый и шрифт */
+body {
+  background: #fff;
+  font-family: 'Inter', Arial, sans-serif;
+  color: #181d24;
+  margin: 0;
+}
+
+.main-wrap-gen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2.7rem 0 0 0;
+}
+
+.hero-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #181d24;
+  line-height: 1.1;
+  margin-top: 0;
+}
+
+.generator-box {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px 0 rgba(50,52,55,0.09);
+  padding: 2.2rem 1.3rem 1.8rem 1.3rem;
+  width: 100%;
+  max-width: 405px;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  margin: 18px 0 6px 0;
+  color: #32405a;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
+  width: 100%;
+  padding: 11px 9px;
+  font-size: 1.07rem;
+  border: 1.6px solid #c9d5e8;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 4px;
+  transition: border .16s;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border: 1.7px solid #2657eb;
+}
+
+.wallet-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mini-btn {
+  padding: 7px 15px;
+  font-size: 0.97rem;
+  background: #ededf1;         /* светло-серый фон */
+  color: #23242a;              /* почти чёрный текст */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 3px;
+  transition: background 0.14s;
+  box-shadow: none;
+}
+.mini-btn:hover {
+  background: #dadadd;
+}
+
+.btn-main-gen {
+  display: block;
+  width: 100%;
+  background: linear-gradient(90deg,#23242a 80%,#181d24 100%);
+  color: #fff;
+  font-size: 1.12rem;
+  font-weight: 700;
+  border: none;
+  padding: 1.04rem 0;
+  border-radius: 2.2rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 18px 0 rgba(50,52,55,0.12);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.17s, box-shadow 0.16s, transform 0.12s;
+}
+
+.btn-main-gen:hover {
+  background: linear-gradient(90deg,#23242a 53%, #35373e 100%);
+  box-shadow: 0 8px 24px 0 rgba(25,35,60,0.10);
+  transform: scale(1.025);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 600px) {
+  .generator-box { padding: 1.2rem 4vw 1.5rem 4vw; }
+  .main-wrap-gen { padding-top: 1.5rem;}
+  .hero-title { font-size: 1.18rem;}
+}
