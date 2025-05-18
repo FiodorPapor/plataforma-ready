@@ -7,45 +7,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .generator-box {
-      box-sizing: border-box;
-      padding-bottom: 22px;
-    }
-    .logo-top {
-      margin: 0 auto 13px auto;
-      text-align: center;
-    }
+    .generator-box { box-sizing: border-box; padding-bottom: 22px; }
+    .logo-top { margin: 0 auto 13px auto; text-align: center; }
     .logo-top img {
-      width: 72px;
-      height: 72px;
-      object-fit: cover; /* Это обеспечит заполнение всего поля */
-      border-radius: 14px;
-      display: block;
-      margin: 0 auto;
-     box-shadow: 0 2px 16px 0 #c6d0e1a0;
-     background: #fff;
+      width: 72px; height: 72px; object-fit: cover; border-radius: 14px;
+      display: block; margin: 0 auto; box-shadow: 0 2px 16px 0 #c6d0e1a0; background: #fff;
     }
-
-    .mini-title {
-      text-align: center;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #5f6d85;
-      margin-bottom: 13px;
-      letter-spacing: 0.01em;
-    }
+    .mini-title { text-align: center; font-size: 1.05rem; font-weight: 600; color: #5f6d85; margin-bottom: 13px; letter-spacing: 0.01em; }
     .info-banner {
-      background: #f4f7fd;
-      color: #38485c;
-      border-radius: 8px;
-      margin: 15px auto 5px auto;
-      text-align: center;
-      padding: 8px 12px 7px 12px;
-      font-size: 1.07rem;
-      border: 1px solid #e0eafc;
-      max-width: 98%;
-      box-shadow: 0 1px 4px 0 #e2e8f070;
-      font-weight: 500;
+      background: #f4f7fd; color: #38485c; border-radius: 8px; margin: 15px auto 5px auto;
+      text-align: center; padding: 12px 14px 11px 14px; font-size: 1.09rem;
+      border: 1px solid #e0eafc; max-width: 98%; box-shadow: 0 1px 4px 0 #e2e8f070;
+      font-weight: 500; line-height: 1.5;
     }
     @media (max-width: 540px) {
       .info-banner { font-size: 0.99rem; padding: 7px 2px; }
@@ -60,10 +33,12 @@
       <div class="logo-top" id="logoBox"></div>
       <div class="mini-title">Datos para tu pago</div>
       <div id="detallePago"></div>
+      <div id="equivalentePago"></div>
       <div id="qrPagoBox"></div>
     </div>
   </div>
   <script>
+    // --- Función para buscar ID por URL ---
     function getID() {
       const params = new URLSearchParams(window.location.search);
       return params.get('id');
@@ -73,21 +48,42 @@
     if (!datos) {
       document.getElementById('pagoBox').innerHTML = '<h2>No se encontró el pago</h2>';
     } else {
-      // Логотип
+      // --- Logo ---
       if (datos.logoBase64) {
         document.getElementById('logoBox').innerHTML = `<img src="${datos.logoBase64}">`;
       } else {
-        // Фолбек если нет логотипа (можешь заменить на свой или оставить пустым)
         document.getElementById('logoBox').innerHTML = `<img src="assets/logo.png">`;
       }
-      // Детали платежа
+      // --- Detalles básicos ---
       document.getElementById('detallePago').innerHTML = `
         <div style="font-weight:700;font-size:1.13rem;margin-bottom:8px;">${datos.nombre}</div>
         <div style="font-size:1.01rem;margin-bottom:7px;">${datos.descripcion}</div>
-        <div style="font-size:1.1rem;margin-bottom:7px;">Criptomoneda: <b>${datos.crypto}</b></div>
-        ${datos.monto ? `<div style="font-size:1.1rem;margin-bottom:10px;">Monto: <b>${datos.monto} ${datos.crypto}</b></div>` : ''}
+        <div style="font-size:1.1rem;margin-bottom:7px;">Moneda: <b>${datos.moneda}</b></div>
+        ${datos.monto ? `<div style="font-size:1.1rem;margin-bottom:10px;">Monto: <b>${datos.monto} ${datos.moneda}</b></div>` : ''}
       `;
-      // QR-код, адрес и баннер
+      // --- Si la moneda es ARS, mostramos equivalente en USDT (en dos líneas) ---
+      if (datos.moneda === 'ARS' && datos.monto) {
+        document.getElementById('equivalentePago').innerHTML = `<div style="margin-bottom:10px;color:#3b55d6;font-weight:600;" id="cotizBox">Cargando cotización...</div>`;
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTARS')
+          .then(r => r.json())
+          .then(usdt => {
+            const montoARS = parseFloat(datos.monto);
+            const precioUSDT = parseFloat(usdt.price);
+            let texto = '';
+            if (precioUSDT && precioUSDT > 0) {
+              const eqUSDT = (montoARS / precioUSDT).toFixed(4);
+              // Mostramos el equivalente en dos líneas usando <br>
+              texto = `${montoARS} ARS ≈ ${eqUSDT} USDT<br>(1 USDT = ${precioUSDT.toFixed(2)} ARS)`;
+            } else {
+              texto = 'No disponible';
+            }
+            document.getElementById('cotizBox').innerHTML = texto; // Usamos innerHTML для <br>
+          })
+          .catch(() => {
+            document.getElementById('cotizBox').innerHTML = 'No disponible';
+          });
+      }
+      // --- QR, dirección y баннер ---
       document.getElementById('qrPagoBox').innerHTML = `
         <canvas id="qrPago" style="display:block;margin:18px auto;"></canvas>
         <div style="text-align:center;margin-bottom:3px;">
@@ -95,12 +91,15 @@
           <button onclick="copiarDireccion()" class="mini-btn" style="margin-left:7px;">Copiar dirección</button>
         </div>
         <div class="info-banner">
-          Elegí la moneda <b>USDT</b> y la red <b>Polygon (POS)</b> en tu billetera.<br>
-          
-          Luego, escaneá el QR o copiá la dirección para pagar.
+          <div>
+            Elegí la moneda <b>USDT</b> y la red <b>Polygon (POS)</b> en tu billetera.
+          </div>
+          <div style="color:#7b889a;font-weight:400;margin-top:5px;">
+            Luego, escaneá el QR o copiá la dirección para pagar.
+          </div>
         </div>
       `;
-      // QR
+      // --- QR ---
       new QRious({
         element: document.getElementById('qrPago'),
         value: datos.wallet,
@@ -108,6 +107,7 @@
       });
       document.getElementById('direccionCopia').value = datos.wallet;
     }
+    // --- Кнопка копирования ---
     function copiarDireccion() {
       document.getElementById('direccionCopia').select();
       document.execCommand('copy');

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Generador de páginas | PlataformA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Librerías para generación de wallet y PDF -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="stylesheet" href="styles.css">
@@ -13,37 +14,48 @@
     <h1 class="hero-title">Generá tu página de cobro en cripto</h1>
     <div class="generator-box">
       <form id="generatorForm">
+        <!-- Nombre del negocio -->
         <label for="nombre">Nombre del negocio*</label>
         <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Café Palermo" required>
 
+        <!-- Descripción del servicio/producto -->
         <label for="descripcion">Descripción del servicio/producto*</label>
         <input type="text" id="descripcion" name="descripcion" placeholder="Ejemplo: Café take away" required>
 
+        <!-- Dirección pública de la wallet y botón para crear -->
         <label for="wallet">Dirección pública de la wallet*</label>
         <div class="wallet-row">
           <input type="text" id="wallet" name="wallet" placeholder="0x..." required>
           <button type="button" id="crearWallet" class="mini-btn">Crear wallet</button>
         </div>
 
-        <label for="crypto">Criptomoneda*</label>
-        <select id="crypto" name="crypto" required>
+        <!-- Moneda a elegir -->
+        <label for="moneda">Moneda*</label>
+        <select id="moneda" name="moneda" required>
           <option value="">Seleccioná una</option>
+          <option value="ARS">ARS</option>
           <option value="USDT">USDT</option>
           <option value="USDC">USDC</option>
         </select>
 
+        <!-- Monto (se adapta a la moneda elegida) -->
         <label for="monto">Monto (opcional)</label>
         <input type="number" id="monto" name="monto" placeholder="Solo números">
 
+        <!-- Equivalente automático solo para ARS -->
+        <div id="equivalenteCripto" style="margin: 6px 0 18px 0; color: #2196f3; font-weight: 600;"></div>
+
+        <!-- Logo del negocio (opcional) -->
         <label for="logo">Logo (opcional)</label>
         <input type="file" id="logo" name="logo" accept="image/*">
 
+        <!-- Botón principal para generar la página -->
         <button type="submit" class="btn-main-gen">Generar página</button>
       </form>
     </div>
   </div>
 
-  <!-- Модальное окно с информацией -->
+  <!-- Modal de advertencia para la wallet -->
   <div id="modalInfo" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>¡Wallet generada correctamente!</h2>
@@ -61,6 +73,7 @@
     </div>
   </div>
 
+  <!-- Lógica principal -->
   <script src="script.js"></script>
 </body>
 </html>
