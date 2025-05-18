@@ -7,23 +7,149 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .generator-box { box-sizing: border-box; padding-bottom: 22px; }
-    .logo-top { margin: 0 auto 13px auto; text-align: center; }
-    .logo-top img {
-      width: 72px; height: 72px; object-fit: cover; border-radius: 14px;
-      display: block; margin: 0 auto; box-shadow: 0 2px 16px 0 #c6d0e1a0; background: #fff;
+    body {
+      background: #f7fafd;
     }
-    .mini-title { text-align: center; font-size: 1.05rem; font-weight: 600; color: #5f6d85; margin-bottom: 13px; letter-spacing: 0.01em; }
+    .generator-box {
+      box-sizing: border-box;
+      border-radius: 22px;
+      box-shadow: 0 4px 26px 0 #e0e8f765;
+      margin: 26px auto 0 auto;
+      max-width: 370px;
+      min-width: 0;
+      background: #fff;
+      position: relative;
+      padding: 23px 16px 13px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-top {
+      margin-bottom: 13px;
+      text-align: center;
+    }
+    .logo-top img {
+      width: 57px; height: 57px; object-fit: cover; border-radius: 14px;
+      box-shadow: 0 2px 16px 0 #c6d0e1a0; background: #fff;
+      border: 2px solid #f3f6fb;
+    }
+    .pay-title {
+      font-weight: 900;
+      font-size: 1.28rem;
+      color: #23386c;
+      text-align: center;
+      margin-bottom: 2px;
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+    .pay-desc {
+      font-size: 1.03rem;
+      color: #4c5a6f;
+      text-align: center;
+      margin-bottom: 7px;
+      margin-top: 0;
+    }
+    .monto-main {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 13px 0 2px 0;
+      text-align: center;
+      letter-spacing: 0.01em;
+      line-height: 1.21;
+    }
+    .monto-ars { color: #2060dd; }
+    .monto-usdt { color: #21a266; }
+    .monto-extra {
+      font-size: 0.96rem; color: #5f6d85; text-align: center; margin-bottom: 3px; line-height: 1.12;
+    }
+    .qr-wrap {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 7px 0 2px 0;
+    }
+    #qrPago {
+      border-radius: 12px;
+      box-shadow: 0 3px 11px 0 #bcd3ee33, 0 0px 0 #fff;
+      background: #f4f7fd;
+      padding: 6px;
+      width: 150px;
+      height: 150px;
+    }
+    .address-copy-wrap {
+      display: flex; justify-content: center; align-items: center; margin: 8px 0 3px 0; width: 100%;
+    }
+    .address-field {
+      width: 68%; min-width: 90px; font-size: 0.98rem; padding: 5px 7px; border-radius: 8px;
+      border: 1.2px solid #d9e4f4; background: #f8fbff;
+      box-shadow: 0 1px 3px #eaf2ff60 inset;
+      transition: border .16s;
+      margin-right: 7px;
+      text-align: center;
+      font-family: 'Inter', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .address-field:focus {
+      border: 1.7px solid #2060dd;
+      outline: none;
+    }
+    .copy-btn {
+      padding: 6px 11px; border-radius: 9px; background: linear-gradient(90deg,#2050dc 40%,#45caff 120%);
+      color: #fff; border: none; font-weight: 700; font-size: 0.98rem;
+      box-shadow: 0 1px 5px 0 #93c3ff25;
+      cursor: pointer; transition: background .18s, box-shadow .14s, transform .08s;
+      display: flex; align-items: center; gap: 6px; height: 33px;
+    }
+    .copy-btn:hover, .copy-btn.copied {
+      background: linear-gradient(90deg,#1a46bd 40%,#2bb7d6 120%);
+      box-shadow: 0 2px 7px 0 #5eaaff35;
+      transform: scale(1.025);
+    }
+    .copy-icon {
+      font-size: 1.13em;
+      vertical-align: middle;
+      opacity: 0.88;
+      margin-right: 1px;
+    }
+    .pago-red {
+      font-size: 1.02rem; color: #21a266; font-weight: 700; margin: 7px 0 0 0; text-align: center; display: flex; justify-content: center; align-items: center; gap: 4px;
+    }
+    .polygon-icon {
+      font-size: 1.15em;
+      vertical-align: middle;
+      margin-right: 2px;
+      opacity: 0.85;
+    }
     .info-banner {
-      background: #f4f7fd; color: #38485c; border-radius: 8px; margin: 15px auto 5px auto;
-      text-align: center; padding: 12px 14px 11px 14px; font-size: 1.09rem;
-      border: 1px solid #e0eafc; max-width: 98%; box-shadow: 0 1px 4px 0 #e2e8f070;
-      font-weight: 500; line-height: 1.5;
+      background: #f4f7fd; color: #38485c; border-radius: 10px; margin: 13px auto 3px auto;
+      text-align: center; padding: 9px 10px 9px 10px; font-size: 0.97rem;
+      border: 1px solid #e0eafc; max-width: 97%; box-shadow: 0 1px 5px 0 #e2e8f065;
+      font-weight: 500; line-height: 1.45;
+    }
+    .powered-plataforma {
+      margin-top: 13px;
+      text-align: center;
+      opacity: 0.72;
+      font-size: 0.97rem;
+      user-select: none;
+    }
+    .powered-plataforma a {
+      text-decoration: none;
+      transition: opacity .18s;
+    }
+    .powered-plataforma a:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
     @media (max-width: 540px) {
-      .info-banner { font-size: 0.99rem; padding: 7px 2px; }
-      .mini-title { font-size: 0.98rem; }
-      .logo-top img { width: 60px; height: 60px; }
+      .generator-box { margin: 9px auto 0 auto; border-radius: 11px; max-width: 99vw; padding: 10px 4px 9px 4px; }
+      .logo-top img { width: 44px; height: 44px; border-radius: 9px; }
+      .pay-title { font-size: 1.05rem; }
+      .pay-desc { font-size: 0.93rem; }
+      .monto-main { font-size: 0.99rem; }
+      #qrPago { width: 116px; height: 116px; padding: 3px; }
+      .address-field { font-size: 0.91rem; }
+      .copy-btn { font-size: 0.93rem; padding: 5px 8px; height: 27px; }
+      .info-banner { font-size: 0.89rem; padding: 7px 2px; }
+      .powered-plataforma { font-size: 0.87rem; margin-top: 8px; }
     }
   </style>
 </head>
@@ -31,87 +157,118 @@
   <div class="main-wrap-gen">
     <div class="generator-box" id="pagoBox">
       <div class="logo-top" id="logoBox"></div>
-      <div class="mini-title">Datos para tu pago</div>
-      <div id="detallePago"></div>
+      <div class="pay-title" id="payTitle"></div>
+      <div class="pay-desc" id="payDesc"></div>
       <div id="equivalentePago"></div>
       <div id="qrPagoBox"></div>
+      <div id="infoPago"></div>
+      <div class="powered-plataforma">
+        <a href="https://www.plataforma.ar" target="_blank" rel="noopener">
+          <img src="assets/logo.png" style="width:21px;vertical-align:middle;margin-right:6px;border-radius:5px;box-shadow:0 1px 4px #ccd9ee50;">
+          <span style="color:#2987fa;font-weight:600;font-size:0.98rem;letter-spacing:0.03em;">Powered by PlataformA.ar</span>
+        </a>
+      </div>
     </div>
   </div>
   <script>
-    // --- Función para buscar ID por URL ---
+    // --- Получение данных ---
     function getID() {
       const params = new URLSearchParams(window.location.search);
       return params.get('id');
     }
     const id = getID();
     const datos = JSON.parse(localStorage.getItem('plataforma_pago_' + id));
+
     if (!datos) {
       document.getElementById('pagoBox').innerHTML = '<h2>No se encontró el pago</h2>';
     } else {
-      // --- Logo ---
+      // --- Логотип: показываем только если был выбран ---
       if (datos.logoBase64) {
         document.getElementById('logoBox').innerHTML = `<img src="${datos.logoBase64}">`;
       } else {
-        document.getElementById('logoBox').innerHTML = `<img src="assets/logo.png">`;
+        document.getElementById('logoBox').innerHTML = '';
       }
-      // --- Detalles básicos ---
-      document.getElementById('detallePago').innerHTML = `
-        <div style="font-weight:700;font-size:1.13rem;margin-bottom:8px;">${datos.nombre}</div>
-        <div style="font-size:1.01rem;margin-bottom:7px;">${datos.descripcion}</div>
-        <div style="font-size:1.1rem;margin-bottom:7px;">Moneda: <b>${datos.moneda}</b></div>
-        ${datos.monto ? `<div style="font-size:1.1rem;margin-bottom:10px;">Monto: <b>${datos.monto} ${datos.moneda}</b></div>` : ''}
-      `;
-      // --- Si la moneda es ARS, mostramos equivalente en USDT (en dos líneas) ---
-      if (datos.moneda === 'ARS' && datos.monto) {
-        document.getElementById('equivalentePago').innerHTML = `<div style="margin-bottom:10px;color:#3b55d6;font-weight:600;" id="cotizBox">Cargando cotización...</div>`;
+      // --- Название и описание по центру ---
+      document.getElementById('payTitle').textContent = datos.nombre;
+      document.getElementById('payDesc').textContent = datos.descripcion;
+
+      // --- Сумма, QR, поля копирования и инфо ---
+      let montoParaPago = datos.monto;
+      let monedaParaPago = datos.moneda;
+
+      function mostrarPago(monto, moneda, extra = "") {
+        document.getElementById('equivalentePago').innerHTML = `
+          <div class="monto-main">
+            <b>Monto:</b> <span class="monto-ars">${datos.monto} ${datos.moneda}</span>
+            ${moneda === "USDT" && datos.moneda === "ARS" ? `<span class="monto-usdt"> ≈ ${monto} USDT</span>` : ""}
+          </div>
+          <div class="monto-extra">${extra}</div>
+        `;
+        // QR
+        document.getElementById('qrPagoBox').innerHTML = `
+          <div class="qr-wrap">
+            <canvas id="qrPago"></canvas>
+          </div>
+          <div class="address-copy-wrap">
+            <input type="text" id="direccionCopia" class="address-field" readonly>
+            <button onclick="copiarDireccion()" class="copy-btn" id="btnCopy">
+              <span class="copy-icon">📋</span> Copiar dirección
+            </button>
+          </div>
+        `;
+        new QRious({
+          element: document.getElementById('qrPago'),
+          value: datos.wallet,
+          size: 150
+        });
+        document.getElementById('direccionCopia').value = datos.wallet;
+        document.getElementById('direccionCopia').addEventListener('click', copiarDireccion);
+
+        document.getElementById('infoPago').innerHTML = `
+          <div class="pago-red"><span class="polygon-icon">🔷</span>Red: <b>Polygon (POS)</b></div>
+          <div class="info-banner">
+            Escaneá el QR o copiá el address en tu billetera o exchange. Elegí la red Polygon para las comisiones más bajas.
+          </div>
+        `;
+      }
+
+      // --- ARS: получить эквивалент, иначе — просто сумму ---
+      if (datos.moneda === "ARS" && datos.monto) {
         fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTARS')
           .then(r => r.json())
           .then(usdt => {
             const montoARS = parseFloat(datos.monto);
             const precioUSDT = parseFloat(usdt.price);
-            let texto = '';
             if (precioUSDT && precioUSDT > 0) {
               const eqUSDT = (montoARS / precioUSDT).toFixed(4);
-              // Mostramos el equivalente en dos líneas usando <br>
-              texto = `${montoARS} ARS ≈ ${eqUSDT} USDT<br>(1 USDT = ${precioUSDT.toFixed(2)} ARS)`;
+              mostrarPago(eqUSDT, "USDT", `(1 USDT = ${precioUSDT.toFixed(2)} ARS)`);
             } else {
-              texto = 'No disponible';
+              mostrarPago("", "USDT", "");
             }
-            document.getElementById('cotizBox').innerHTML = texto; // Usamos innerHTML для <br>
           })
           .catch(() => {
-            document.getElementById('cotizBox').innerHTML = 'No disponible';
+            mostrarPago("", "USDT", "");
           });
+      } else {
+        mostrarPago(montoParaPago, monedaParaPago, "");
       }
-      // --- QR, dirección y баннер ---
-      document.getElementById('qrPagoBox').innerHTML = `
-        <canvas id="qrPago" style="display:block;margin:18px auto;"></canvas>
-        <div style="text-align:center;margin-bottom:3px;">
-          <input type="text" id="direccionCopia" readonly style="width:80%;font-size:1rem;margin-bottom:7px;">
-          <button onclick="copiarDireccion()" class="mini-btn" style="margin-left:7px;">Copiar dirección</button>
-        </div>
-        <div class="info-banner">
-          <div>
-            Elegí la moneda <b>USDT</b> y la red <b>Polygon (POS)</b> en tu billetera.
-          </div>
-          <div style="color:#7b889a;font-weight:400;margin-top:5px;">
-            Luego, escaneá el QR o copiá la dirección para pagar.
-          </div>
-        </div>
-      `;
-      // --- QR ---
-      new QRious({
-        element: document.getElementById('qrPago'),
-        value: datos.wallet,
-        size: 180
-      });
-      document.getElementById('direccionCopia').value = datos.wallet;
     }
-    // --- Кнопка копирования ---
+
+    // --- Кнопка копирования + анимация ---
     function copiarDireccion() {
-      document.getElementById('direccionCopia').select();
+      const field = document.getElementById('direccionCopia');
+      field.select();
+      field.setSelectionRange(0, 99_999);
       document.execCommand('copy');
-      alert('Dirección copiada');
+      field.blur();
+      // Визуальная обратная связь + плавная анимация
+      const btn = document.getElementById('btnCopy');
+      btn.classList.add("copied");
+      btn.innerHTML = "<span class='copy-icon'>✅</span> ¡Copiado!";
+      setTimeout(() => {
+        btn.classList.remove("copied");
+        btn.innerHTML = `<span class="copy-icon">📋</span> Copiar dirección`;
+      }, 1200);
     }
   </script>
 </body>
