@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cobro | PlataformA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans flex items-center justify-center min-h-screen">
+  <div id="container" class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-6 text-center">
+    <img id="logo" class="w-20 h-20 mx-auto hidden" alt="Logo del negocio" />
+    <h1 id="nombre" class="text-2xl font-bold"></h1>
+    <p id="descripcion" class="text-gray-600"></p>
+
+    <div class="space-y-2">
+      <p class="text-sm font-medium text-gray-500">Dirección de Wallet</p>
+      <div class="flex items-center justify-center space-x-2">
+        <span id="wallet" class="text-xs break-all bg-gray-100 p-2 rounded-md"></span>
+        <button onclick="copiarWallet()" class="text-sm bg-blue-500 text-white px-2 py-1 rounded">Copiar</button>
+      </div>
+    </div>
+
+    <div id="qr-container" class="flex justify-center">
+      <!-- Aquí va el QR generado dinámicamente -->
+    </div>
+
+    <div id="montoEditable" class="hidden">
+      <input id="inputMonto" type="number" min="0" placeholder="Ingresá el monto" class="w-full border border-gray-300 p-2 rounded" />
+    </div>
+
+    <button onclick="simularPago()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Simular Pago</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrious"></script>
+  <script src="/scripts/cobro.js"></script>
+</body>
+</html>

@@ -1,131 +1,276 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>PlataformA</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html {
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      background: #fff;
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      color: #181d24;
+      min-height: 100vh;
+    }
+    .main-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #23272f;
+      letter-spacing: 1px;
+      margin-bottom: 1.3rem;
+      margin-top: 2.1rem;
+      user-select: none;
+    }
+    .logo .A {
+      color: #a4aab3;
+      text-decoration: underline;
+      text-underline-offset: 0.13em;
+      margin-left: 2px;
+      font-weight: 600;
+    }
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.65rem;
+      color: #181d24;
+      line-height: 1.1;
+      margin-top: 0;
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: #5c6371;
+      font-weight: 700;
+      margin-bottom: 2.1rem;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+    .btn-main {
+      display: inline-block;
+      background: linear-gradient(90deg,#23242a 80%,#181d24 100%);
+      color: #fff;
+      font-size: 1.08rem;
+      font-weight: 700;
+      border: none;
+      padding: 0.9rem 2.7rem;
+      border-radius: 2rem;
+      box-shadow: 0 4px 24px 0 rgba(50,52,55,0.13);
+      margin-bottom: 2rem;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.18s, transform 0.13s;
+      outline: none;
+      letter-spacing: 0.02em;
+    }
+    .btn-main:hover {
+      background: linear-gradient(90deg,#23242a 50%, #35373e 100%);
+      box-shadow: 0 10px 28px 0 rgba(25,35,60,0.12);
+      transform: scale(1.035);
+    }
+    .coins {
+      display: flex;
+      gap: 1.7rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .coin-icon {
+      width: 2.7rem;
+      height: 2.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.16s;
+    }
+    .coin-icon img {
+      width: 2.2rem;
+      height: 2.2rem;
+      display: block;
+      transition: filter 0.19s, transform 0.14s;
+    }
+    .coin-icon:hover img {
+      filter:
+        drop-shadow(0 0 0px #fff)
+        drop-shadow(0 0 18px #ffd700)
+        brightness(1.15);
+      transform: scale(1.12);
+    }
+    .coin-icon[title="ETH"]:hover img {
+      filter:
+        drop-shadow(0 0 7px #fff)
+        drop-shadow(0 0 18px #657ef8)
+        brightness(1.16);
+    }
+    .coin-icon[title="USDT"]:hover img {
+      filter:
+        drop-shadow(0 0 10px #fff)
+        drop-shadow(0 0 15px #19c37d)
+        brightness(1.16);
+    }
+    .info-block {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    .light-text {
+      color: #8f98a8;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    .btn-benef {
+      display: inline-block;
+      margin-top: 1.1rem;
+      background: #fff;
+      color: #23272f;
+      font-size: 1.03rem;
+      font-weight: 600;
+      border: 2px solid #e3e7ee;
+      padding: 0.7rem 2.3rem;
+      border-radius: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 2px 12px 0 rgba(120,120,130,0.04);
+      transition: border 0.13s, box-shadow 0.18s, color 0.14s;
+    }
+    .btn-benef:hover {
+      border: 2px solid #19c37d;
+      color: #19c37d;
+      box-shadow: 0 3px 16px 0 rgba(25,195,125,0.11);
+    }
+    .scroll-down {
+      margin: 1.7rem auto 0 auto;
+      width: 2.3rem;
+      height: 2.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f7fff9;
+      box-shadow: 0 2px 9px 0 #caf5e7;
+      cursor: pointer;
+      transition: background 0.17s;
+    }
+    .scroll-down svg {
+      width: 1.2rem;
+      height: 1.2rem;
+      stroke: #19c37d;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      display: block;
+    }
+    .scroll-down:hover {
+      background: #e9fff2;
+    }
+    .wa-btn {
+      position: fixed;
+      bottom: 16px;
+      right: 14px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 4px 22px 0 rgba(22,202,76,0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      transition: box-shadow 0.18s;
+      outline: none;
+    }
+    .wa-btn img {
+      width: 45px;
+      height: 45px;
+      display: block;
+      object-fit: contain;
+    }
+    .wa-btn:hover {
+      box-shadow: 0 0 0 11px #eafff2, 0 4px 18px 0 #19c37d66;
+    }
+    @media (min-width: 700px) {
+      .main-wrap { padding-top: 1.5rem; }
+      .logo { font-size: 2.8rem; margin-bottom: 2.3rem; margin-top: 2.8rem;}
+      .hero-title { font-size: 3.1rem; }
+      .hero-sub { font-size: 1.25rem; margin-bottom: 2.7rem;}
+      .btn-main { font-size: 1.23rem; padding: 1.2rem 3.3rem; margin-bottom: 2.7rem;}
+      .coins { gap: 2.6rem; margin-bottom: 2.5rem;}
+      .coin-icon { width: 3.5rem; height: 3.5rem;}
+      .coin-icon img { width: 2.8rem; height: 2.8rem;}
+      .info-block { margin-bottom: 1.7rem;}
+      .light-text { font-size: 1.16rem;}
+      .btn-benef { font-size: 1.16rem; padding: 0.98rem 3.3rem; margin-top: 1.5rem;}
+      .scroll-down { width: 2.8rem; height: 2.8rem;}
+      .scroll-down svg { width: 1.5rem; height: 1.5rem;}
+      .wa-btn { width: 68px; height: 68px; bottom: 24px; right: 24px;}
+      .wa-btn img { width: 52px; height: 52px;}
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
-  <header class="flex justify-between items-center px-6 py-4 border-b border-gray-700">
-    <h1 class="text-2xl font-bold">PlataformA</h1>
-    <div class="flex gap-4">
-      <a href="#registro" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">Registrate gratis</a>
-      <a href="login.html" class="border border-green-500 hover:bg-green-600 hover:text-white text-green-400 px-4 py-2 rounded-lg transition">Iniciar sesión</a>
+<body>
+  <div class="main-wrap">
+    <div class="logo">
+      Plataform<span class="A">A</span>
     </div>
-  </header>
-
-  <main class="text-center px-4" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center;">
-    <h2 class="text-5xl font-extrabold mb-4">PlataformA</h2>
-    <p class="text-xl mb-6 text-gray-300">Ecosistema de soluciones listas para hacer crecer tu negocio</p>
-
-    <div class="mt-10 text-2xl h-16">
-      <span id="typedText" class="text-green-400 font-semibold"></span>
+    <h1 class="hero-title">Cobrá en cripto</h1>
+    <div class="hero-sub">Fácil. Seguro. Sin vueltas.</div>
+    <button class="btn-main">Empezar ahora</button>
+    <div class="coins">
+      <div class="coin-icon" title="BTC">
+        <img src="assets/BTC.png" alt="BTC">
+      </div>
+      <div class="coin-icon" title="ETH">
+        <img src="assets/ETH.png" alt="ETH">
+      </div>
+      <div class="coin-icon" title="USDT">
+        <img src="assets/USDT.png" alt="USDT">
+      </div>
     </div>
-
-    <a href="#registro" class="mt-10 mx-auto inline-block max-w-xs bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-bold transition">Activar pagos en cripto</a>
-  </main>
-
-  <section id="registro" class="px-6 py-20 bg-gray-900 text-left">
-    <div class="max-w-xl mx-auto">
-      <h3 class="text-3xl font-bold mb-6 text-center">Registrate en 1 minuto</h3>
-      <form id="formulario" class="grid gap-4">
-        <input type="text" id="nombre" placeholder="Nombre" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
-        <input type="email" id="email" placeholder="Email" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
-        <input type="password" id="password" placeholder="Contraseña" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400" required>
-        <input type="text" id="negocio" placeholder="Nombre del negocio" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400">
-        <input type="text" id="web" placeholder="Sitio web (opcional)" class="p-3 rounded bg-gray-700 text-white placeholder-gray-400">
-        <select id="pais" class="p-3 rounded bg-gray-700 text-white" required>
-          <option value="" disabled selected>País</option>
-          <option value="Argentina">Argentina</option>
-          <option value="Uruguay">Uruguay</option>
-          <option value="Chile">Chile</option>
-          <option value="Otro">Otro</option>
-        </select>
-        <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-bold transition">Crear cuenta</button>
-      </form>
+    <div class="info-block">
+      <div class="light-text">Empezá a cobrar en minutos.</div>
+      <div class="light-text">Sin saber nada de cripto.</div>
+      <div class="light-text">
+        Sin bancos, sin trabas, sin comisiones.
+      </div>
+      <button class="btn-benef" id="btn-benef">Ver beneficios</button>
     </div>
-  </section>
-
+    <div class="scroll-down" onclick="scrollToNextBlock()" title="Desliza para ver más">
+      <svg viewBox="0 0 32 32">
+        <path d="M8 12 L16 20 L24 12"></path>
+      </svg>
+    </div>
+  </div>
+  <a href="https://wa.me/5491127369492" class="wa-btn" target="_blank" aria-label="WhatsApp">
+    <img src="assets/WA.png" alt="WhatsApp">
+  </a>
   <script>
-    const frases = [
-      "Evitá las comisiones del 6%",
-      "Recibí pagos globales sin bancos",
-      "Aceptá cripto de turistas y nómades",
-      "Cobrales en USDT, DAI o BTC"
-    ];
-
-    let index = 0;
-    const typedText = document.getElementById("typedText");
-
-    function typePhrase() {
-      typedText.textContent = "";
-      let i = 0;
-      const interval = setInterval(() => {
-        typedText.textContent += frases[index][i];
-        i++;
-        if (i >= frases[index].length) {
-          clearInterval(interval);
-          setTimeout(() => {
-            index = (index + 1) % frases.length;
-            typePhrase();
-          }, 2000);
-        }
-      }, 70);
+    function scrollToNextBlock() {
+      window.scrollTo({
+        top: window.innerHeight * 0.93,
+        behavior: 'smooth'
+      });
     }
-
-    function validarFormulario(data) {
-      const emailValido = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email);
-      if (!emailValido) return "Poné un email válido";
-      if (!data.nombre || data.nombre.length < 2) return "Ingresá tu nombre";
-      if (!data.password || data.password.length < 4) return "Elegí una contraseña (mínimo 4 caracteres)";
-      return null;
-    }
-
-    function generarClientIdCorto() {
-      return Math.random().toString(36).substring(2, 10);
-    }
-
-    document.addEventListener("DOMContentLoaded", typePhrase);
-
-    document.getElementById("formulario").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const data = {
-        nombre: document.getElementById("nombre").value,
-        email: document.getElementById("email").value.trim(),
-        password: document.getElementById("password").value,
-        negocio: document.getElementById("negocio").value,
-        web: document.getElementById("web").value,
-        pais: document.getElementById("pais").value,
-        id: generarClientIdCorto()
-      };
-
-      const error = validarFormulario(data);
-      if (error) {
-        alert(error);
-        return;
-      }
-
-      try {
-        const res = await fetch("http://localhost:3000/registro", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (res.ok && result.client_id) {
-          localStorage.setItem("client_id", result.client_id);
-          window.location.href = "dashboard.html";
-        } else {
-          alert(result.error || "Hubo un error inesperado. Intentá más tarde.");
-        }
-      } catch (err) {
-        console.error("Error al registrar:", err);
-        alert("Hubo un error al registrar. Intentá de nuevo más tarde.");
-      }
+    document.getElementById('btn-benef').addEventListener('click', function() {
+      // Aquí el código para mostrar el siguiente bloque
     });
   </script>
 </body>

@@ -14,5 +14,20 @@
     "escenario_activado": true,
     "tipo_escenario": "monto_fijo",
     "link_escenario": "plataforma.ar/pagar/ie4r9hpp/monto_fijo"
+  },
+  {
+    "client_id": "8gm51z5i",
+    "nombre": "Fedor",
+    "email": "fyodorpap@gmail.com",
+    "password": "1234",
+    "negocio": "Libreria F",
+    "web": "www.",
+    "pais": "Argentina",
+    "fecha_registro": "2025-04-25T16:50:54.479Z",
+    "wallet_address": "0x436209e1dF1248ba46b8adeC44627Af76d71142C",
+    "fecha_wallet": "2025-04-25T16:50:57.243Z",
+    "escenario_activado": true,
+    "tipo_escenario": "monto_editable",
+    "link_escenario": "plataforma.ar/pagar/8gm51z5i/monto_editable"
   }
 ]

@@ -1,6 +1,3 @@
-/* Estilo heredado del landing PlataformA + mejoras para la forma */
-
-/* Фоновый и шрифт */
 body {
   background: #fff;
   font-family: 'Inter', Arial, sans-serif;
@@ -73,8 +70,8 @@ select:focus {
 .mini-btn {
   padding: 7px 15px;
   font-size: 0.97rem;
-  background: #ededf1;         /* светло-серый фон */
-  color: #23242a;              /* почти чёрный текст */
+  background: #ededf1;
+  color: #23242a;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -110,7 +107,36 @@ select:focus {
   transform: scale(1.025);
 }
 
-/* Мобильная адаптация */
+/* Modal UX para advertencia post wallet */
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(30,38,42,0.19);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 32px 0 rgba(50,52,55,0.13);
+  padding: 2.4rem 2.2rem 2rem 2.2rem;
+  max-width: 390px;
+  text-align: center;
+}
+.modal-content h2 {
+  font-size: 1.45rem;
+  color: #242f3e;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.modal-content p {
+  color: #333b44;
+  font-size: 1.05rem;
+  margin: 0.7rem 0 0.7rem 0;
+}
+
 @media (max-width: 600px) {
   .generator-box { padding: 1.2rem 4vw 1.5rem 4vw; }
   .main-wrap-gen { padding-top: 1.5rem;}
