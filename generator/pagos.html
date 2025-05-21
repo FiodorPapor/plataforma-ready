@@ -7,9 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-      background: #f7fafd;
-    }
+    body { background: #f7fafd; }
     .generator-box {
       box-sizing: border-box;
       border-radius: 22px;
@@ -97,6 +95,7 @@
       box-shadow: 0 1px 5px 0 #93c3ff25;
       cursor: pointer; transition: background .18s, box-shadow .14s, transform .08s;
       display: flex; align-items: center; gap: 6px; height: 33px;
+      white-space: nowrap;
     }
     .copy-btn:hover, .copy-btn.copied {
       background: linear-gradient(90deg,#1a46bd 40%,#2bb7d6 120%);
@@ -125,19 +124,34 @@
       font-weight: 500; line-height: 1.45;
     }
     .powered-plataforma {
-      margin-top: 13px;
+      margin-top: 14px;
       text-align: center;
-      opacity: 0.72;
-      font-size: 0.97rem;
+      opacity: 0.83;
+      font-size: 0.98rem;
       user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .powered-plataforma a {
       text-decoration: none;
-      transition: opacity .18s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #2987fa;
+      transition: opacity .18s, color .16s;
+      font-weight: 600;
     }
     .powered-plataforma a:hover {
       opacity: 1;
       text-decoration: underline;
+      color: #15399b;
+    }
+    .powered-plataforma img {
+      width: 18px; height: 18px; border-radius: 5px; box-shadow: 0 1px 4px #ccd9ee50;
+      background: #fff;
+      margin-right: 2px;
     }
     @media (max-width: 540px) {
       .generator-box { margin: 9px auto 0 auto; border-radius: 11px; max-width: 99vw; padding: 10px 4px 9px 4px; }
@@ -150,6 +164,7 @@
       .copy-btn { font-size: 0.93rem; padding: 5px 8px; height: 27px; }
       .info-banner { font-size: 0.89rem; padding: 7px 2px; }
       .powered-plataforma { font-size: 0.87rem; margin-top: 8px; }
+      .powered-plataforma img { width: 15px; height: 15px; }
     }
   </style>
 </head>
@@ -162,10 +177,11 @@
       <div id="equivalentePago"></div>
       <div id="qrPagoBox"></div>
       <div id="infoPago"></div>
+      <!-- Powered by PlataformA.ar -->
       <div class="powered-plataforma">
         <a href="https://www.plataforma.ar" target="_blank" rel="noopener">
-          <img src="assets/logo.png" style="width:21px;vertical-align:middle;margin-right:6px;border-radius:5px;box-shadow:0 1px 4px #ccd9ee50;">
-          <span style="color:#2987fa;font-weight:600;font-size:0.98rem;letter-spacing:0.03em;">Powered by PlataformA.ar</span>
+          <img src="assets/logo.png" alt="PlataformA logo">
+          <span>Powered by PlataformA.ar</span>
         </a>
       </div>
     </div>
@@ -184,7 +200,7 @@
     } else {
       // --- Логотип: показываем только если был выбран ---
       if (datos.logoBase64) {
-        document.getElementById('logoBox').innerHTML = `<img src="${datos.logoBase64}">`;
+        document.getElementById('logoBox').innerHTML = `<img src="${datos.logoBase64}" alt="Logo del negocio">`;
       } else {
         document.getElementById('logoBox').innerHTML = '';
       }

@@ -13,7 +13,7 @@
   <div class="main-wrap-gen">
     <h1 class="hero-title">Generá tu página de cobro en cripto</h1>
     <div class="generator-box">
-      <form id="generatorForm">
+      <form id="generatorForm" autocomplete="off">
         <!-- Nombre del negocio -->
         <label for="nombre">Nombre del negocio*</label>
         <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Café Palermo" required>
@@ -26,7 +26,10 @@
         <label for="wallet">Dirección pública de la wallet*</label>
         <div class="wallet-row">
           <input type="text" id="wallet" name="wallet" placeholder="0x..." required>
-          <button type="button" id="crearWallet" class="mini-btn">Crear wallet</button>
+          <button type="button" id="crearWallet" class="mini-btn" aria-label="Generar wallet">
+            <span class="copy-icon" style="font-size:1.13em;vertical-align:middle;">🆕</span>
+            Wallet
+          </button>
         </div>
 
         <!-- Moneda a elegir -->
@@ -40,10 +43,10 @@
 
         <!-- Monto (se adapta a la moneda elegida) -->
         <label for="monto">Monto (opcional)</label>
-        <input type="number" id="monto" name="monto" placeholder="Solo números">
+        <input type="number" id="monto" name="monto" placeholder="Solo números" min="0" step="any" inputmode="decimal">
 
         <!-- Equivalente automático solo para ARS -->
-        <div id="equivalenteCripto" style="margin: 6px 0 18px 0; color: #2196f3; font-weight: 600;"></div>
+        <div id="equivalenteCripto" style="margin: 6px 0 18px 0; color: #2196f3; font-weight: 600; font-size:1rem;"></div>
 
         <!-- Logo del negocio (opcional) -->
         <label for="logo">Logo (opcional)</label>
